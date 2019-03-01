@@ -26,3 +26,14 @@ func EnsureNotLoggedIn() gin.HandlerFunc {
 		}
 	}
 }
+
+func EnsureLoggedIn() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		loggedInInterface, _ := ctx.Get("is_logged_in")
+		loggedIn := loggedInInterface.(bool)
+		if !loggedIn {
+			// if token, err := c.Cookie("token"); err == nil || token != "" {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+		}
+	}
+}

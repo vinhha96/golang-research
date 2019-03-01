@@ -25,4 +25,13 @@ func InitRoutes(router *gin.Engine) {
 
 		userRoutes.POST("/register", handler.Register)
 	}
+
+	articleRoutes := router.Group("/article")
+	{
+		articleRoutes.GET("/view/:article_id", handler.GetArticleByID)
+
+		articleRoutes.GET("/create", handler.EnsureLoggedIn(), handler.ShowCreateArticlePage)
+
+		articleRoutes.POST("/create", handler.EnsureLoggedIn(), handler.CreateNewArticle)
+	}
 }

@@ -1,5 +1,7 @@
 package models
 
+import "errors"
+
 type article struct {
 	ID      int    `json:"id"`
 	Title   string `json:"title"`
@@ -17,4 +19,13 @@ var articleList = []article{
 // Return a list of all the articles
 func GetAllArticles() []article {
 	return articleList
+}
+
+func GetArticleByID(articleID int) (*article, error) {
+	for _, article := range articleList {
+		if article.ID == articleID {
+			return &article, nil
+		}
+	}
+	return nil, errors.New("Can't find article in database")
 }
