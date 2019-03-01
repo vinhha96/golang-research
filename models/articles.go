@@ -29,3 +29,11 @@ func GetArticleByID(articleID int) (*article, error) {
 	}
 	return nil, errors.New("Can't find article in database")
 }
+
+func CreateNewArticle(title, content string) (*article, error) {
+	newArticle := article{ID: len(articleList) + 1, Title: title, Content: content}
+
+	articleList = append(articleList, newArticle)
+
+	return &newArticle, nil
+}

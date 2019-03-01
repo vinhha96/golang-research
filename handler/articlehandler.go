@@ -23,9 +23,22 @@ func GetArticleByID(ctx *gin.Context) {
 }
 
 func ShowCreateArticlePage(ctx *gin.Context) {
-
+	render(ctx, gin.H{
+		"title": "Create new article",
+	}, "create-article.html")
 }
 
 func CreateNewArticle(ctx *gin.Context) {
+	title := ctx.PostForm("title")
+	content := ctx.PostForm("content")
+
+	if article, err := models.CreateNewArticle(title, content); err == nil {
+		render(ctx, gin.H{
+			"title":   "Submission successfuly",
+			"payload": article,
+		}, "submission-successful.html")
+	} else {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+	}
 
 }
