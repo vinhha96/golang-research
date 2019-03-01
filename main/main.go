@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"github.com/vinhha96/golang-research/database"
+	"github.com/vinhha96/golang-research/models"
 	"github.com/vinhha96/golang-research/routes"
 	"github.com/vinhha96/golang-research/utils"
 )
@@ -17,11 +19,23 @@ func main() {
 
 	port := viper.GetString("api.port")
 
+	// Router:
 	router = gin.Default()
-
 	router.LoadHTMLGlob("../templates/*")
-
 	routes.InitRoutes(router)
+
+	// Database:
+	//db, err := database.GetDBConnection(
+	//	viper.GetString("database.dialect"),
+	//	viper.GetString("database.url"))
+	db, err := database.GetDBConnection("mysql", "arun:password@/golang_research?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		panic("Connect DB error")
+	}
+
+	// Create DB
+	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Article{})
 
 	_ = router.Run(":" + port)
 }
