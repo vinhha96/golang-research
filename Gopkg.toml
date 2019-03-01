@@ -24,9 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 [metadata.heroku]
-  root-package = "github.com/vinhha96/golang-research"
+  root-package = "github.com/vinhha96/golang-research/main/"
   go-version = "1.8.3"
-  install = [ "./main" ]
+  install = [ "/main.go" ]
 
 [prune]
   go-tests = true
