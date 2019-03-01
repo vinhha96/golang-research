@@ -17,8 +17,8 @@ func ShowIndexPage(c *gin.Context) {
 }
 
 func render(c *gin.Context, data gin.H, template string) {
-	//loggedInInterface, _ := c.Get("is_loggin_in")
-	//data["is_logged_in"] = loggedInInterface.(bool)
+	loggedInInterface, _ := c.Get("is_logged_in")
+	data["is_logged_in"] = loggedInInterface.(bool)
 
 	switch c.Request.Header.Get("Accept") {
 	case "application/json":

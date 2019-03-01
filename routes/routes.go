@@ -6,6 +6,23 @@ import (
 )
 
 func InitRoutes(router *gin.Engine) {
-	router.GET("/", handler.ShowIndexPage)
-}
 
+	router.Use(handler.SetUserStatus())
+
+	router.GET("/", handler.ShowIndexPage)
+
+	userRoutes := router.Group("/u")
+	{
+		userRoutes.GET("/user/:userID", handler.ShowProfilePage)
+
+		userRoutes.GET("/login", handler.EnsureNotLoggedIn(), handler.LoginPage)
+
+		userRoutes.POST("/login", handler.EnsureNotLoggedIn(), handler.PerformLogin)
+
+		userRoutes.GET("/logout", handler.LogoutPage)
+
+		userRoutes.GET("/register", handler.ShowRegistrationPage)
+
+		userRoutes.POST("/register", handler.Register)
+	}
+}

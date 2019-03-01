@@ -9,7 +9,7 @@ var router *gin.Engine
 
 func main() {
 	// Set Gin to production mode
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 
 	router = gin.Default()
 
