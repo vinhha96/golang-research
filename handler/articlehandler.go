@@ -2,12 +2,21 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"github.com/vinhha96/golang-research/models"
 	"net/http"
 	"strconv"
 )
 
-func GetArticleByID(ctx *gin.Context) {
+type ArticleHandler struct {
+	db *gorm.DB
+}
+
+func NewArticleHandler(db *gorm.DB) *ArticleHandler {
+	return &ArticleHandler{db: db}
+}
+
+func (articleHandler *ArticleHandler) GetArticleByID(ctx *gin.Context) {
 	if articleID, err := strconv.Atoi(ctx.Param("article_id")); err == nil {
 		if article, err := models.GetArticleByID(articleID); err == nil {
 			render(ctx, gin.H{
@@ -22,13 +31,13 @@ func GetArticleByID(ctx *gin.Context) {
 	}
 }
 
-func ShowCreateArticlePage(ctx *gin.Context) {
+func (articleHandler *ArticleHandler) ShowCreateArticlePage(ctx *gin.Context) {
 	render(ctx, gin.H{
 		"title": "Create new article",
 	}, "create-article.html")
 }
 
-func CreateNewArticle(ctx *gin.Context) {
+func (articleHandler *ArticleHandler) CreateNewArticle(ctx *gin.Context) {
 	title := ctx.PostForm("title")
 	content := ctx.PostForm("content")
 

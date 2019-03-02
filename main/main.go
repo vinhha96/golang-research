@@ -19,11 +19,6 @@ func main() {
 
 	port := viper.GetString("api.port")
 
-	// Router:
-	router = gin.Default()
-	router.LoadHTMLGlob("../templates/*")
-	routes.InitRoutes(router)
-
 	// Database:
 	//db, err := database.GetDBConnection(
 	//	viper.GetString("database.dialect"),
@@ -36,6 +31,12 @@ func main() {
 	// Create DB
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Article{})
+
+	// Router:
+	router = gin.Default()
+	router.LoadHTMLGlob("../templates/*")
+	routes.InitRoutes(router, db)
+
 
 	_ = router.Run(":" + port)
 }
