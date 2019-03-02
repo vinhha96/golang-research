@@ -3,12 +3,18 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-
-	"github.com/vinhha96/golang-research/models"
 )
 
-func ShowIndexPage(c *gin.Context) {
-	articles := models.GetAllArticles()
+type RootHandler struct {
+	ArticleHandler *ArticleHandler
+}
+
+func NewRootHandler(ArticleHandler *ArticleHandler) *RootHandler {
+	return &RootHandler{ArticleHandler: ArticleHandler}
+}
+
+func (handler *RootHandler) ShowIndexPage(c *gin.Context) {
+	articles := handler.ArticleHandler.GetAllArticle()
 
 	// Call the render function with the name of the template to render
 	render(c, gin.H{

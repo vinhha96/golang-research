@@ -4,18 +4,23 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/vinhha96/golang-research/handler"
+	"github.com/vinhha96/golang-research/models"
 )
 
 func InitRoutes(router *gin.Engine, db *gorm.DB) {
 
 	router.Use(handler.SetUserStatus())
 
-	userHandler := handler.NewUserHandler(db)
+	userHandler := handler.NewUserHandler()
+	userHandler.UserStore = models.NewUserStore(db)
 
-	articleHandler := handler.NewArticleHandler(db)
+	articleHandler := handler.NewArticleHandler()
+	articleHandler.ArticleStore = models.NewArticleStore(db)
 
-	router.GET("/", handler.ShowIndexPage)
-	
+	rootHandler := handler.NewRootHandler(articleHandler)
+
+	router.GET("/", rootHandler.ShowIndexPage)
+
 	userRoutes := router.Group("/u")
 	{
 		userRoutes.GET("/user/:userID", userHandler.ShowProfilePage)
