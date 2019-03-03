@@ -15,7 +15,7 @@ func main() {
 	// Set Gin to production mode
 	gin.SetMode(gin.DebugMode)
 
-	utils.InitializeConfiguration("", "env", "../config")
+	utils.InitializeConfiguration("", "env", "./config")
 
 	port := viper.GetString("api.port")
 
@@ -23,7 +23,7 @@ func main() {
 	//db, err := database.GetDBConnection(
 	//	viper.GetString("database.dialect"),
 	//	viper.GetString("database.url"))
-	db, err := database.GetDBConnection("mysql", "arun:password@/golang_research?charset=utf8&parseTime=True&loc=Local")
+	db, err := database.GetDBConnection("mysql", "arun:password@tcp(172.17.0.1:3306)/golang_research?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic("Connect DB error")
 	}
@@ -34,9 +34,8 @@ func main() {
 
 	// Router:
 	router = gin.Default()
-	router.LoadHTMLGlob("../templates/*")
+	router.LoadHTMLGlob("./templates/*")
 	routes.InitRoutes(router, db)
-
 
 	_ = router.Run(":" + port)
 }
