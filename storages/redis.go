@@ -16,12 +16,12 @@ type RedisClient struct {
 	*redis.Client
 }
 
-func GetRedisClient() *RedisClient {
+func GetRedisClient(address, password string) *RedisClient {
 	once.Do(func() {
 		client := redis.NewClient(&redis.Options{
-			Addr:     "localhost:32768",
-			Password: "", // no password set
-			DB:       0,  // use default DB
+			Addr:     address,
+			Password: password, // no password set
+			DB:       0,        // use default DB
 		})
 
 		redisClient = &RedisClient{client}
@@ -29,7 +29,7 @@ func GetRedisClient() *RedisClient {
 
 	_, err := redisClient.Ping().Result()
 	if err != nil {
-		log.Fatalf("Could not connect to redis %v", err)
+		log.Fatalf("[Error] Could not connect to redis %v", err)
 	}
 
 	return redisClient
@@ -47,9 +47,12 @@ func (c *RedisClient) SaveToStore() {
 	}
 
 	result, _ := c.Get("ABC").Result()
+
+	var user models.User
+	err = json.Unmarshal([]byte(result), &user)
 	if err != nil {
 		log.Println("Get value error")
 	}
 
-	log.Println(result)
+	log.Println(user)
 }

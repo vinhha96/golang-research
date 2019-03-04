@@ -5,9 +5,10 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/vinhha96/golang-research/handler"
 	"github.com/vinhha96/golang-research/models"
+	"github.com/vinhha96/golang-research/storages"
 )
 
-func InitRoutes(router *gin.Engine, db *gorm.DB) {
+func InitRoutes(router *gin.Engine, db *gorm.DB, redisClient *storages.RedisClient) {
 
 	router.Use(handler.SetUserStatus())
 

@@ -7,7 +7,7 @@ import (
 )
 
 func GetDBConnection(dialect, url string) (*gorm.DB, error) {
-	fmt.Println("Open connection to database")
+	fmt.Println("[MySQL] Open connection to database")
 	db, err := gorm.Open(dialect, url)
 
 	return db, err

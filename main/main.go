@@ -17,20 +17,21 @@ func main() {
 	// Set Gin to production mode
 	gin.SetMode(gin.DebugMode)
 
-	utils.InitializeConfiguration("", "env", "../config")
+	utils.InitializeConfiguration("", "env", "./config")
 
+	fmt.Println(fmt.Sprintf("[Config] API Port: %s", viper.GetString("api.port")))
 	port := viper.GetString("api.port")
 
-	fmt.Println(fmt.Sprintf("Dialect: %s", viper.GetString("database.dialect")))
-	fmt.Println(fmt.Sprintf("Url: %s", viper.GetString("database.url")))
+	fmt.Println(fmt.Sprintf("[Config] Dialect: %s", viper.GetString("database.dialect")))
+	fmt.Println(fmt.Sprintf("[Config] Url: %s", viper.GetString("database.url")))
 
-	// Database:
+	// Connect Database:
 	db, err := database.GetDBConnection(
 		viper.GetString("database.dialect"),
 		viper.GetString("database.url"))
 
 	if err != nil {
-		panic("Connect DB error")
+		panic("[Error] Connect DB error")
 	}
 
 	// Create DB
@@ -38,14 +39,17 @@ func main() {
 	db.AutoMigrate(&models.Article{})
 
 	// Create Redis:
+	fmt.Println(fmt.Sprintf("[Config] Redis address: %s", viper.GetString("redis.address")))
+	fmt.Println(fmt.Sprintf("[Config] Redis password: %s", viper.GetString("redis.password")))
 
-	redisClient := storages.GetRedisClient()
-	redisClient.SaveToStore()
+	redisClient := storages.GetRedisClient(
+		viper.GetString("redis.address"),
+		viper.GetString("redis.password"))
 
 	// Router:
 	router = gin.Default()
-	router.LoadHTMLGlob("../templates/*")
-	routes.InitRoutes(router, db)
+	router.LoadHTMLGlob("./templates/*")
+	routes.InitRoutes(router, db, redisClient)
 
 	_ = router.Run(":" + port)
 }
