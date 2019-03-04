@@ -7,6 +7,7 @@ import (
 	"github.com/vinhha96/golang-research/database"
 	"github.com/vinhha96/golang-research/models"
 	"github.com/vinhha96/golang-research/routes"
+	"github.com/vinhha96/golang-research/storages"
 	"github.com/vinhha96/golang-research/utils"
 )
 
@@ -16,17 +17,18 @@ func main() {
 	// Set Gin to production mode
 	gin.SetMode(gin.DebugMode)
 
-	utils.InitializeConfiguration("", "env", "./config")
+	utils.InitializeConfiguration("", "env", "../config")
 
 	port := viper.GetString("api.port")
 
-	fmt.Printf("Dialect: %s", viper.GetString("database.dialect"))
-	fmt.Printf("Url: %s", viper.GetString("database.url"))
+	fmt.Println(fmt.Sprintf("Dialect: %s", viper.GetString("database.dialect")))
+	fmt.Println(fmt.Sprintf("Url: %s", viper.GetString("database.url")))
+
 	// Database:
 	db, err := database.GetDBConnection(
 		viper.GetString("database.dialect"),
 		viper.GetString("database.url"))
-	//db, err := database.GetDBConnection("mysql", "arun:password@tcp(172.17.0.1:3306)/golang_research?charset=utf8&parseTime=True&loc=Local")
+
 	if err != nil {
 		panic("Connect DB error")
 	}
@@ -35,9 +37,14 @@ func main() {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Article{})
 
+	// Create Redis:
+
+	redisClient := storages.GetRedisClient()
+	redisClient.SaveToStore()
+
 	// Router:
 	router = gin.Default()
-	router.LoadHTMLGlob("./templates/*")
+	router.LoadHTMLGlob("../templates/*")
 	routes.InitRoutes(router, db)
 
 	_ = router.Run(":" + port)
