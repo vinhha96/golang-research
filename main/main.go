@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/vinhha96/golang-research/database"
@@ -19,11 +20,13 @@ func main() {
 
 	port := viper.GetString("api.port")
 
+	fmt.Printf("Dialect: %s", viper.GetString("database.dialect"))
+	fmt.Printf("Url: %s", viper.GetString("database.url"))
 	// Database:
-	//db, err := database.GetDBConnection(
-	//	viper.GetString("database.dialect"),
-	//	viper.GetString("database.url"))
-	db, err := database.GetDBConnection("mysql", "arun:password@tcp(172.17.0.1:3306)/golang_research?charset=utf8&parseTime=True&loc=Local")
+	db, err := database.GetDBConnection(
+		viper.GetString("database.dialect"),
+		viper.GetString("database.url"))
+	//db, err := database.GetDBConnection("mysql", "arun:password@tcp(172.17.0.1:3306)/golang_research?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic("Connect DB error")
 	}
