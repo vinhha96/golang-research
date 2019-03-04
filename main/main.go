@@ -48,7 +48,7 @@ func main() {
 
 	// Router:
 	router = gin.Default()
-	router.LoadHTMLGlob("./templates/*")
+	router.LoadHTMLGlob("./views/templates/*")
 	routes.InitRoutes(router, db, redisClient)
 
 	_ = router.Run(":" + port)

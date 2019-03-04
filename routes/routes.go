@@ -11,6 +11,7 @@ import (
 func InitRoutes(router *gin.Engine, db *gorm.DB, redisClient *storages.RedisClient) {
 
 	router.Use(handler.SetUserStatus())
+	router.Static("/views", "./views")
 
 	userHandler := handler.NewUserHandler()
 	userHandler.UserStore = models.NewUserStore(db)
@@ -24,6 +25,8 @@ func InitRoutes(router *gin.Engine, db *gorm.DB, redisClient *storages.RedisClie
 
 	userRoutes := router.Group("/u")
 	{
+		userRoutes.Static("/views", "./views")
+
 		userRoutes.GET("/user/:userID", userHandler.ShowProfilePage)
 
 		userRoutes.GET("/login", handler.EnsureNotLoggedIn(), userHandler.LoginPage)
@@ -39,6 +42,8 @@ func InitRoutes(router *gin.Engine, db *gorm.DB, redisClient *storages.RedisClie
 
 	articleRoutes := router.Group("/article")
 	{
+		articleRoutes.Static("/views", "./views")
+
 		articleRoutes.GET("/view/:article_id", articleHandler.GetArticleByID)
 
 		articleRoutes.GET("/create", handler.EnsureLoggedIn(), articleHandler.ShowCreateArticlePage)
