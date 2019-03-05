@@ -1,6 +1,29 @@
 version: '3'
 
 services:
+  db:
+    image: mysql/mysql-server:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: golang_research
+      MYSQL_USER: arun
+      MYSQL_PASSWORD: password
+    networks:
+      - proxynet
+    expose:
+      - 3306
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - proxynet
+
   webapi:
     build:
       context: ../
@@ -10,6 +33,7 @@ services:
       - "3000:3000"
     networks:
       - proxynet
+#    command: ["chmod +x ./docker/wait-for-it.sh && ./docker/wait-for-it.sh 0.0.0.0:3306 -t 0"]
     environment:
       API_PORT: 3000
       DATABASE_URL: arun:password@tcp(172.17.0.1:3306)/golang_research?charset=utf8&parseTime=True&loc=Local
