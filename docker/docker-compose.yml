@@ -11,8 +11,6 @@ services:
       MYSQL_PASSWORD: password
     networks:
       - proxynet
-    expose:
-      - 3306
     ports:
       - "3306:3306"
 
